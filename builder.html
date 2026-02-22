@@ -40,7 +40,7 @@ Message <input id="msg" type="text" value="HELLO">
 <div id="status"></div>
 
 <button id="generateBtn">Generate Link</button>
-<div id="output"></div>
+<a id="output" href="#"></a>
 
 <script>
 const SECRET_KEY = "minesalt";
@@ -171,7 +171,9 @@ function generateLink() {
   const raw = `${width}|${height}|${message}|${bitstring}`;
   const encoded = btoa(xorScramble(raw));
 
-  outputDiv.textContent = `play.html#${encoded}`;
+  link = `dallach.github.io/play.html#${encoded}`;
+  outputDiv.textContent = link;
+  outputDiv.href = link;
 }
 
 createBoard();
