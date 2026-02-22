@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Secret Minesweeper</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+body { font-family:sans-serif; text-align:center; margin:0; padding:12px; }
+#board { display:inline-grid; gap:4px; margin-top:12px; }
+.cell {
+  width:38px; height:38px;
+  background:#bbb;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-weight:bold;
+  border-radius:6px;
+  user-select:none;
+}
+.revealed { background:#eee; }
+.marked { background:#4caf50; color:white; }
+.triggered { background:#e53935; color:white; }
+button { padding:6px 12px; margin:6px; }
+.active { background:black; color:white; }
+#status { margin-top:12px; font-weight:bold; min-height:24px; }
+</style>
+</head>
+<body>
+
+<h3>Secret Minesweeper</h3>
+
+<div>
+  <button id="revealBtn">Reveal</button>
+  <button id="markBtn">Mark</button>
+</div>
+
+<div id="board"></div>
+<div id="status"></div>
+
+<script>
+const SECRET_KEY = "minesalt";
+
+const boardDiv = document.getElementById("board");
+const statusDiv = document.getElementById("status");
+const revealBtn = document.getElementById("revealBtn");
+const markBtn = document.getElementById("markBtn");
+
+let width, height, message, layout;
+let board = [];
+let correct = 0;
+let mode = "reveal";
+let gameOver = false;
+
+revealBtn.addEventListener("click", () => setMode("reveal"));
+markBtn.addEventListener("click", () => setMode("mark"));
+
+function xorScramble(str){
+  let out="";
+  for(let i=0;i<str.length;i++){
+    const k=SECRET_KEY.charCodeAt(i%SECRET_KEY.length);
+    out+=String.fromCharCode(str.charCodeAt(i)^k);
+  }
+  return out;
+}
+
+function parse(){
+  const hash = location.hash.slice(1);
+  if(!hash) return;
+
+  const decoded = atob(hash);
+  const raw = xorScramble(decoded);
+  const parts = raw.split("|");
+
+  width = parseInt(parts[0]);
+  height = parseInt(parts[1]);
+  message = parts[2];
+  layout = parts[3];
+
+  init();
+}
+
+function init(){
+  board = [];
+  boardDiv.innerHTML = "";
+  boardDiv.style.gridTemplateColumns = `repeat(${width},38px)`;
+  correct = 0;
+  gameOver = false;
+  statusDiv.textContent = "";
+
+  let msgIndex = 0;
+
+  for(let y=0;y<height;y++){
+    board[y] = [];
+    for(let x=0;x<width;x++){
+      const idx = y*width + x;
+      const isMine = layout[idx] === "1";
+
+      board[y][x] = {
+        mine: isMine,
+        letter: isMine ? message[msgIndex++] : "",
+        revealed: false,
+        marked: false,
+        count: 0,
+        triggered: false
+      };
+    }
+  }
+
+  calculateCounts();
+  render();
+}
+
+function calculateCounts(){
+  for(let y=0;y<height;y++){
+    for(let x=0;x<width;x++){
+      if(board[y][x].mine) continue;
+      let c=0;
+      for(let dy=-1;dy<=1;dy++){
+        for(let dx=-1;dx<=1;dx++){
+          const ny=y+dy, nx=x+dx;
+          if(ny>=0 && ny<height && nx>=0 && nx<width){
+            if(board[ny][nx].mine) c++;
+          }
+        }
+      }
+      board[y][x].count = c;
+    }
+  }
+}
+
+function setMode(m){
+  mode = m;
+  revealBtn.classList.toggle("active", m==="reveal");
+  markBtn.classList.toggle("active", m==="mark");
+}
+
+function clickCell(x,y){
+  if(gameOver) return;
+  const cell = board[y][x];
+  if(cell.revealed) return;
+
+  if(mode==="mark"){
+    if(cell.mine){
+      cell.marked = true;
+      cell.revealed = true;
+      correct++;
+      if(correct === message.length){
+        statusDiv.textContent = "SECRET: " + message;
+        gameOver = true;
+      }
+    } else {
+      // Incorrect mark triggers loss
+      gameOver = true;
+      cell.revealed = true;
+      cell.triggered = true;
+      cell.textContent = cell.count > 0 ? cell.count : "";
+      statusDiv.textContent = "GAME OVER";
+    }
+  } else {
+    if(cell.mine){
+      cell.triggered = true;
+      cell.revealed = true;
+      statusDiv.textContent = "GAME OVER";
+      gameOver = true;
+    } else {
+      cell.revealed = true;
+      if(cell.count === 0) flood(x,y);
+    }
+  }
+
+  render();
+}
+
+function render(){
+  boardDiv.innerHTML="";
+  for(let y=0;y<height;y++){
+    for(let x=0;x<width;x++){
+      const d=document.createElement("div");
+      d.className="cell";
+      const cell=board[y][x];
+
+      if(cell.revealed){
+        d.classList.add("revealed");
+
+        if(cell.triggered){
+          d.classList.add("triggered");
+          if(cell.mine){
+            d.textContent = cell.letter;  // triggered mine
+          } else {
+            d.textContent = cell.count > 0 ? cell.count : ""; // mis-marked empty
+          }
+        }
+        else if(cell.marked){
+          d.classList.add("marked");
+          d.textContent = cell.letter;
+        }
+        else if(cell.count>0){
+          d.textContent = cell.count;
+        }
+      }
+
+      d.addEventListener("click", () => clickCell(x,y));
+      boardDiv.appendChild(d);
+    }
+  }
+}
+
+function flood(x,y){
+  for(let dy=-1;dy<=1;dy++){
+    for(let dx=-1;dx<=1;dx++){
+      const ny=y+dy, nx=x+dx;
+      if(ny>=0 && ny<height && nx>=0 && nx<width){
+        const n = board[ny][nx];
+        if(!n.revealed && !n.mine){
+          n.revealed = true;
+          if(n.count===0) flood(nx,ny);
+        }
+      }
+    }
+  }
+}
+
+
+setMode("reveal");
+parse();
+</script>
+
+</body>
+</html>

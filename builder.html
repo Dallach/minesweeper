@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Minesweeper Builder</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+body { font-family: sans-serif; text-align:center; margin:0; padding:12px; }
+#board { display:inline-grid; gap:4px; margin-top:12px; }
+.cell {
+  width:38px; height:38px;
+  background:#ddd;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-weight:bold;
+  border-radius:6px;
+  cursor:pointer;
+  user-select:none;
+}
+.mine { background:#333; color:white; }
+.valid { color:green; font-weight:bold; }
+.invalid { color:red; font-weight:bold; }
+button { padding:6px 12px; margin:6px; }
+input { margin:4px; }
+#output { margin-top:12px; word-break:break-all; }
+</style>
+</head>
+<body>
+
+<h3>Build Secret Minesweeper</h3>
+
+Width <input id="w" type="number" value="8" min="3" max="20">
+Height <input id="h" type="number" value="8" min="3" max="20">
+<br>
+Message <input id="msg" type="text" value="HELLO">
+<button id="newBoardBtn">New Board</button>
+
+<div id="board"></div>
+<div id="status"></div>
+
+<button id="generateBtn">Generate Link</button>
+<div id="output"></div>
+
+<script>
+const SECRET_KEY = "minesalt";
+
+const boardDiv = document.getElementById("board");
+const statusDiv = document.getElementById("status");
+const outputDiv = document.getElementById("output");
+const msgInput = document.getElementById("msg");
+const wInput = document.getElementById("w");
+const hInput = document.getElementById("h");
+
+let width = 0;
+let height = 0;
+let board = [];
+
+document.getElementById("newBoardBtn").addEventListener("click", createBoard);
+document.getElementById("generateBtn").addEventListener("click", generateLink);
+msgInput.addEventListener("input", updateLetters);
+
+function createBoard() {
+  width = parseInt(wInput.value);
+  height = parseInt(hInput.value);
+
+  board = [];
+  boardDiv.innerHTML = "";
+  boardDiv.style.gridTemplateColumns = `repeat(${width}, 38px)`;
+
+  for (let y = 0; y < height; y++) {
+    board[y] = [];
+    for (let x = 0; x < width; x++) {
+      board[y][x] = false;
+
+      const cell = document.createElement("div");
+      cell.className = "cell";
+      cell.addEventListener("click", () => toggle(x, y));
+      boardDiv.appendChild(cell);
+    }
+  }
+
+  updateLetters();
+}
+
+function toggle(x, y) {
+  board[y][x] = !board[y][x];
+  updateLetters();
+}
+
+function updateLetters() {
+  if (!board.length) return;
+
+  const message = msgInput.value;
+  const cells = boardDiv.querySelectorAll(".cell");
+
+  let minePositions = [];
+
+  for (let y = 0; y < height; y++) {
+    for (let x = 0; x < width; x++) {
+      if (board[y][x]) minePositions.push({ x, y });
+    }
+  }
+
+  minePositions.sort((a, b) =>
+    (a.y * width + a.x) - (b.y * width + b.x)
+  );
+
+  cells.forEach(c => {
+    c.classList.remove("mine");
+    c.textContent = "";
+  });
+
+  for (let i = 0; i < minePositions.length; i++) {
+    const { x, y } = minePositions[i];
+    const index = y * width + x;
+    const cell = cells[index];
+
+    cell.classList.add("mine");
+
+    if (i < message.length) {
+      cell.textContent = message[i];
+    }
+  }
+
+  const mineCount = minePositions.length;
+
+  if (mineCount === message.length) {
+    statusDiv.textContent = "Mine count matches message length.";
+    statusDiv.className = "valid";
+  } else {
+    statusDiv.textContent =
+      `Mines: ${mineCount} | Message length: ${message.length}`;
+    statusDiv.className = "invalid";
+  }
+}
+
+function xorScramble(str) {
+  let out = "";
+  for (let i = 0; i < str.length; i++) {
+    const k = SECRET_KEY.charCodeAt(i % SECRET_KEY.length);
+    out += String.fromCharCode(str.charCodeAt(i) ^ k);
+  }
+  return out;
+}
+
+function generateLink() {
+  if (!board.length) return;
+
+  const message = msgInput.value;
+  let bitstring = "";
+  let mineCount = 0;
+
+  for (let y = 0; y < height; y++) {
+    for (let x = 0; x < width; x++) {
+      if (board[y][x]) {
+        bitstring += "1";
+        mineCount++;
+      } else {
+        bitstring += "0";
+      }
+    }
+  }
+
+  if (mineCount !== message.length) {
+    statusDiv.textContent = "Fix mismatch before generating link.";
+    statusDiv.className = "invalid";
+    return;
+  }
+
+  const raw = `${width}|${height}|${message}|${bitstring}`;
+  const encoded = btoa(xorScramble(raw));
+
+  outputDiv.textContent = `play.html#${encoded}`;
+}
+
+createBoard();
+</script>
+
+</body>
+</html>
