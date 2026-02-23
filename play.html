@@ -2,48 +2,305 @@
 <html>
 <head>
 <meta charset="UTF-8">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAzMiAzMiI+CiAgPCEtLSBEYXJrIGNlbGwgYmFja2dyb3VuZCAtLT4KICA8cmVjdCB3aWR0aD0iMzIiIGhlaWdodD0iMzIiIHJ4PSI2IiBmaWxsPSIjMWMxOTE3Ii8+CiAgPCEtLSBNaW5lIGJvZHkgKGNpcmNsZSkgLS0+CiAgPGNpcmNsZSBjeD0iMTYiIGN5PSIxNiIgcj0iNyIgZmlsbD0iI2ZiYmYyNCIvPgogIDwhLS0gTWluZSBzcGlrZXMgLS0+CiAgPGxpbmUgeDE9IjE2IiB5MT0iNSIgeDI9IjE2IiB5Mj0iMiIgc3Ryb2tlPSIjZmJiZjI0IiBzdHJva2Utd2lkdGg9IjIuNSIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIi8+CiAgPGxpbmUgeDE9IjE2IiB5MT0iMjciIHgyPSIxNiIgeTI9IjMwIiBzdHJva2U9IiNmYmJmMjQiIHN0cm9rZS13aWR0aD0iMi41IiBzdHJva2UtbGluZWNhcD0icm91bmQiLz4KICA8bGluZSB4MT0iNSIgeTE9IjE2IiB4Mj0iMiIgeTI9IjE2IiBzdHJva2U9IiNmYmJmMjQiIHN0cm9rZS13aWR0aD0iMi41IiBzdHJva2UtbGluZWNhcD0icm91bmQiLz4KICA8bGluZSB4MT0iMjciIHkxPSIxNiIgeDI9IjMwIiB5Mj0iMTYiIHN0cm9rZT0iI2ZiYmYyNCIgc3Ryb2tlLXdpZHRoPSIyLjUiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIvPgogIDxsaW5lIHgxPSI4LjUiIHkxPSI4LjUiIHgyPSI2LjUiIHkyPSI2LjUiIHN0cm9rZT0iI2ZiYmYyNCIgc3Ryb2tlLXdpZHRoPSIyLjUiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIvPgogIDxsaW5lIHgxPSIyMy41IiB5MT0iMjMuNSIgeDI9IjI1LjUiIHkyPSIyNS41IiBzdHJva2U9IiNmYmJmMjQiIHN0cm9rZS13aWR0aD0iMi41IiBzdHJva2UtbGluZWNhcD0icm91bmQiLz4KICA8bGluZSB4MT0iMjMuNSIgeTE9IjguNSIgeDI9IjI1LjUiIHkyPSI2LjUiIHN0cm9rZT0iI2ZiYmYyNCIgc3Ryb2tlLXdpZHRoPSIyLjUiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIvPgogIDxsaW5lIHgxPSI4LjUiIHkxPSIyMy41IiB4Mj0iNi41IiB5Mj0iMjUuNSIgc3Ryb2tlPSIjZmJiZjI0IiBzdHJva2Utd2lkdGg9IjIuNSIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIi8+CiAgPCEtLSBTaGluZSBkb3QgLS0+CiAgPGNpcmNsZSBjeD0iMTMiIGN5PSIxMyIgcj0iMiIgZmlsbD0id2hpdGUiIG9wYWNpdHk9IjAuNCIvPgo8L3N2Zz4=">
 <title>Secret Minesweeper</title>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <style>
-body { font-family:sans-serif; text-align:center; margin:0; padding:12px; }
-#board { display:inline-grid; gap:4px; margin-top:12px; }
-.cell {
-  width:38px; height:38px;
-  background:#bbb;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  font-weight:bold;
-  border-radius:6px;
-  user-select:none;
-}
-.revealed { background:#eee; }
-.marked { background:#4caf50; color:white; }
-.triggered { background:#e53935; color:white; }
-button { padding:6px 12px; margin:6px; }
-.active { background:black; color:white; }
-#status { margin-top:12px; font-weight:bold; min-height:24px; }
+  @import url('https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Bebas+Neue&display=swap');
+
+  :root {
+    --reveal-color: #2979ff;
+    --reveal-light: #e3edff;
+    --reveal-hover: #bbcfff;
+    --mark-color: #e53935;
+    --mark-light: #ffeaea;
+    --mark-hover: #ffbbbb;
+    --cell-size: clamp(36px, 10vw, 46px);
+    --gap: clamp(3px, 1vw, 5px);
+    --border-width: 5px;
+    --radius: 8px;
+    --bg: #f0f0f0;
+    --board-bg: #d8d8d8;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Space Mono', monospace;
+    background: var(--bg);
+    min-height: 100dvh;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 16px 8px 32px;
+    gap: 0;
+  }
+
+  h3, #mode-bar, #mode-label, #progress, #status, #restart-btn {
+    align-self: center;
+  }
+
+  #board-wrapper {
+    align-self: center;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  h3 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(1.6rem, 6vw, 2.2rem);
+    letter-spacing: 0.12em;
+    color: #111;
+    margin-bottom: 16px;
+  }
+
+  /* ── MODE BUTTONS ── */
+  #mode-bar {
+    display: flex;
+    gap: 10px;
+    width: 100%;
+    max-width: 480px;
+    margin-bottom: 14px;
+  }
+
+  .mode-btn {
+    flex: 1;
+    padding: 12px 8px;
+    border: none;
+    border-radius: 10px;
+    font-family: 'Space Mono', monospace;
+    font-size: clamp(0.75rem, 3vw, 0.9rem);
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    cursor: pointer;
+    transition: all 0.18s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+    background: #ddd;
+    color: #888;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+  }
+
+  .mode-btn .icon { font-size: 1.1em; }
+
+  .mode-btn.active-reveal {
+    background: var(--reveal-color);
+    color: #fff;
+    box-shadow: 0 4px 16px rgba(41,121,255,0.35);
+    transform: translateY(-1px);
+  }
+
+  .mode-btn.active-mark {
+    background: var(--mark-color);
+    color: #fff;
+    box-shadow: 0 4px 16px rgba(229,57,53,0.35);
+    transform: translateY(-1px);
+  }
+
+  /* ── MODE LABEL ── */
+  #mode-label {
+    font-size: clamp(0.7rem, 2.5vw, 0.8rem);
+    font-weight: 700;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    margin-bottom: 10px;
+    min-height: 1.2em;
+    transition: color 0.2s;
+  }
+
+  #mode-label.reveal { color: var(--reveal-color); }
+  #mode-label.mark   { color: var(--mark-color); }
+
+  /* ── BOARD WRAPPER ── */
+  #board-wrapper {
+    padding: var(--border-width);
+    border-radius: calc(var(--radius) + var(--border-width));
+    transition: background 0.25s ease, box-shadow 0.25s ease;
+    margin-bottom: 14px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  #board-wrapper.reveal {
+    background: var(--reveal-color);
+    box-shadow: 0 0 0 2px var(--reveal-color), 0 6px 28px rgba(41,121,255,0.25);
+  }
+
+  #board-wrapper.mark {
+    background: var(--mark-color);
+    box-shadow: 0 0 0 2px var(--mark-color), 0 6px 28px rgba(229,57,53,0.28);
+  }
+
+  #board {
+    display: inline-grid;
+    gap: 0;
+    background: var(--board-bg);
+    border-radius: var(--radius);
+    padding: var(--gap);
+  }
+
+  /* ── CELLS ── */
+  .cell {
+    width: var(--cell-size);
+    height: var(--cell-size);
+    background: #c8c8c8;
+    border: calc(var(--gap) / 2) solid var(--board-bg);
+    box-sizing: border-box;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: clamp(0.75rem, 2.8vw, 1rem);
+    border-radius: 5px;
+    cursor: pointer;
+    user-select: none;
+    -webkit-tap-highlight-color: transparent;
+    transition: background 0.12s, transform 0.08s;
+    position: relative;
+  }
+
+  /* hover tints and cursors — desktop only */
+  @media (hover: hover) {
+    body.mode-reveal .cell:not(.revealed):hover,
+    body.mode-reveal .cell:not(.revealed).trail {
+      background: var(--reveal-hover);
+      transform: scale(1.07);
+    }
+    body.mode-mark .cell:not(.revealed):hover,
+    body.mode-mark .cell:not(.revealed).trail {
+      background: var(--mark-hover);
+      transform: scale(1.07);
+    }
+    body.mode-reveal .cell:not(.revealed), body.mode-reveal #board { cursor: default; }
+    body.mode-mark   .cell:not(.revealed), body.mode-mark   #board { cursor: crosshair; }
+  }
+
+  .cell.trail-fade {
+    transition: background 0.08s ease, transform 0.08s ease !important;
+  }
+
+  .cell.revealed {
+    background: #e8e8e8;
+    cursor: default;
+  }
+
+  .cell.marked {
+    background: #388e3c;
+    color: #fff;
+  }
+
+  .cell.triggered {
+    background: #c62828;
+    color: #fff;
+    animation: shake 0.35s ease;
+  }
+
+  @keyframes shake {
+    0%,100% { transform: translateX(0); }
+    20%      { transform: translateX(-5px); }
+    40%      { transform: translateX(5px); }
+    60%      { transform: translateX(-4px); }
+    80%      { transform: translateX(3px); }
+  }
+
+  /* Colored mine-count numbers */
+  .n1 { color: #1565c0; }
+  .n2 { color: #2e7d32; }
+  .n3 { color: #b71c1c; }
+  .n4 { color: #4a148c; }
+  .n5 { color: #bf360c; }
+  .n6 { color: #006064; }
+  .n7 { color: #212121; }
+  .n8 { color: #616161; }
+
+  /* ── STATUS ── */
+  #status {
+    font-family: 'Space Mono', monospace;
+    font-size: clamp(0.9rem, 4vw, 1.2rem);
+    letter-spacing: 0.05em;
+    min-height: 2em;
+    padding: 0 12px;
+    text-align: center;
+    transition: color 0.2s;
+  }
+
+  #status.win  { color: #2e7d32; }
+  #status.lose { color: #c62828; }
+
+  /* ── PROGRESS ── */
+  #progress {
+    font-size: clamp(0.7rem, 2.5vw, 0.8rem);
+    color: #666;
+    margin-bottom: 6px;
+    letter-spacing: 0.08em;
+  }
+
+  /* ── RESTART BUTTON ── */
+  #restart-btn {
+    display: none;
+    margin-top: 12px;
+    padding: 10px 28px;
+    border: none;
+    border-radius: 8px;
+    background: #333;
+    color: #fff;
+    font-family: 'Space Mono', monospace;
+    font-size: 0.85rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    cursor: pointer;
+    transition: background 0.15s, transform 0.1s;
+  }
+  #restart-btn:hover { background: #555; transform: translateY(-1px); }
+  #restart-btn.visible { display: inline-block; }
+
+  /* ── WIN MESSAGE ANIMATION ── */
+  .letter-reveal {
+    display: inline-block;
+    animation: popIn 0.3s cubic-bezier(0.34,1.56,0.64,1) both;
+  }
+  @keyframes popIn {
+    from { transform: scale(0) rotate(-10deg); opacity: 0; }
+    to   { transform: scale(1) rotate(0deg);  opacity: 1; }
+  }
 </style>
 </head>
-<body>
+<body class="mode-reveal">
 
 <h3>Secret Minesweeper</h3>
 
-<div>
-  <button id="revealBtn">Reveal</button>
-  <button id="markBtn">Mark</button>
+<div id="mode-bar">
+  <button class="mode-btn" id="revealBtn" onclick="setMode('reveal')">
+    <span class="icon">🔍</span> REVEAL
+  </button>
+  <button class="mode-btn" id="markBtn" onclick="setMode('mark')">
+    <span class="icon">🚩</span> MARK MINE
+  </button>
 </div>
 
-<div id="board"></div>
+<div id="mode-label" class="reveal">MODE: REVEAL</div>
+<div id="progress"></div>
+
+<div id="board-wrapper" class="reveal">
+  <div id="board"></div>
+</div>
+
 <div id="status"></div>
+<button id="restart-btn" onclick="restartGame()">↺ PLAY AGAIN</button>
 
 <script>
 const SECRET_KEY = "minesalt";
 
-const boardDiv = document.getElementById("board");
-const statusDiv = document.getElementById("status");
-const revealBtn = document.getElementById("revealBtn");
-const markBtn = document.getElementById("markBtn");
+const boardDiv    = document.getElementById("board");
+const statusDiv   = document.getElementById("status");
+const progressDiv = document.getElementById("progress");
+const wrapper     = document.getElementById("board-wrapper");
+const modeLabel   = document.getElementById("mode-label");
+const restartBtnEl = document.getElementById("restart-btn");
+const revealBtn   = document.getElementById("revealBtn");
+const markBtn     = document.getElementById("markBtn");
 
 let width, height, message, layout;
 let board = [];
@@ -51,53 +308,70 @@ let correct = 0;
 let mode = "reveal";
 let gameOver = false;
 
-revealBtn.addEventListener("click", () => setMode("reveal"));
-markBtn.addEventListener("click", () => setMode("mark"));
-
-function xorScramble(str){
-  let out="";
-  for(let i=0;i<str.length;i++){
-    const k=SECRET_KEY.charCodeAt(i%SECRET_KEY.length);
-    out+=String.fromCharCode(str.charCodeAt(i)^k);
-  }
-  return out;
+function xorScrambleBytes(bytes) {
+  const key = SECRET_KEY;
+  return bytes.map((b, i) => b ^ key.charCodeAt(i % key.length));
 }
 
 function parse(){
   const hash = location.hash.slice(1);
-  if(!hash) return;
+  if(!hash){ statusDiv.textContent = "No puzzle loaded."; return; }
+  try {
+    // Decode base64 to bytes
+    const binary  = atob(hash);
+    const bytes   = Uint8Array.from(binary, c => c.charCodeAt(0));
+    const unscram = xorScrambleBytes(bytes);
 
-  const decoded = atob(hash);
-  const raw = xorScramble(decoded);
-  const parts = raw.split("|");
+    // First 4 bytes: width (2) and height (2)
+    width  = (unscram[0] << 8) | unscram[1];
+    height = (unscram[2] << 8) | unscram[3];
 
-  width = parseInt(parts[0]);
-  height = parseInt(parts[1]);
-  message = parts[2];
-  layout = parts[3];
+    // Next ceil(width*height/8) bytes: packed bit layout
+    const bitCount  = width * height;
+    const byteCount = Math.ceil(bitCount / 8);
+    const packed    = unscram.slice(4, 4 + byteCount);
 
-  init();
+    // Unpack bits into layout string
+    let bits = "";
+    for (let i = 0; i < byteCount; i++) {
+      for (let b = 7; b >= 0; b--) {
+        bits += (packed[i] >> b) & 1;
+      }
+    }
+    layout = bits.slice(0, bitCount);
+
+    // Remaining bytes: message (UTF-8)
+    const msgBytes = unscram.slice(4 + byteCount);
+    message = new TextDecoder().decode(msgBytes);
+
+    init();
+  } catch(e) {
+    statusDiv.textContent = "Invalid puzzle link.";
+  }
 }
 
 function init(){
   board = [];
   boardDiv.innerHTML = "";
-  boardDiv.style.gridTemplateColumns = `repeat(${width},38px)`;
+  boardDiv.style.gridTemplateColumns = `repeat(${width}, var(--cell-size))`;
   correct = 0;
   gameOver = false;
   statusDiv.textContent = "";
+  statusDiv.className = "";
+  updateProgress();
 
+  // Build a list of non-space chars to assign to mines (spaces are encoded
+  // in the message but don't correspond to a mine cell)
+  const mineChars = [...message].filter(c => c !== " ");
   let msgIndex = 0;
-
-  for(let y=0;y<height;y++){
+  for(let y = 0; y < height; y++){
     board[y] = [];
-    for(let x=0;x<width;x++){
-      const idx = y*width + x;
+    for(let x = 0; x < width; x++){
+      const idx = y * width + x;
       const isMine = layout[idx] === "1";
-
       board[y][x] = {
         mine: isMine,
-        letter: isMine ? message[msgIndex++] : "",
+        letter: isMine ? mineChars[msgIndex++] : "",
         revealed: false,
         marked: false,
         count: 0,
@@ -105,20 +379,19 @@ function init(){
       };
     }
   }
-
   calculateCounts();
   render();
 }
 
 function calculateCounts(){
-  for(let y=0;y<height;y++){
-    for(let x=0;x<width;x++){
+  for(let y = 0; y < height; y++){
+    for(let x = 0; x < width; x++){
       if(board[y][x].mine) continue;
-      let c=0;
-      for(let dy=-1;dy<=1;dy++){
-        for(let dx=-1;dx<=1;dx++){
-          const ny=y+dy, nx=x+dx;
-          if(ny>=0 && ny<height && nx>=0 && nx<width){
+      let c = 0;
+      for(let dy = -1; dy <= 1; dy++){
+        for(let dx = -1; dx <= 1; dx++){
+          const ny = y+dy, nx = x+dx;
+          if(ny >= 0 && ny < height && nx >= 0 && nx < width){
             if(board[ny][nx].mine) c++;
           }
         }
@@ -130,100 +403,161 @@ function calculateCounts(){
 
 function setMode(m){
   mode = m;
-  revealBtn.classList.toggle("active", m==="reveal");
-  markBtn.classList.toggle("active", m==="mark");
+  document.body.className = `mode-${m}`;
+  wrapper.className = m;
+  modeLabel.className = m;
+  modeLabel.textContent = m === "reveal" ? "MODE: REVEAL" : "MODE: MARK MINE";
+
+  revealBtn.className = "mode-btn" + (m === "reveal" ? " active-reveal" : "");
+  markBtn.className   = "mode-btn" + (m === "mark"   ? " active-mark"   : "");
 }
 
-function clickCell(x,y){
+// Trail effect — highlights cells the mouse passes through quickly
+const trailTimers = new WeakMap();
+document.getElementById("board").addEventListener("mousemove", e => {
+  const el = document.elementFromPoint(e.clientX, e.clientY);
+  if (!el || !el.classList.contains("cell") || el.classList.contains("revealed")) return;
+
+  // Clear any existing fade timer and snap it back to highlighted
+  if (trailTimers.has(el)) {
+    clearTimeout(trailTimers.get(el));
+    el.classList.remove("trail-fade");
+  }
+  el.classList.add("trail");
+
+  // After a short delay, start fading out
+  const t = setTimeout(() => {
+    el.classList.add("trail-fade");
+    el.classList.remove("trail");
+    setTimeout(() => el.classList.remove("trail-fade"), 80);
+  }, 30);
+  trailTimers.set(el, t);
+});
+
+function updateProgress(){
+  if(!message) return;
+  const total = [...message].filter(c => c !== " ").length;
+  progressDiv.textContent = `${correct} / ${total} found`;
+}
+
+function clickCell(x, y){
   if(gameOver) return;
   const cell = board[y][x];
   if(cell.revealed) return;
 
-  if(mode==="mark"){
+  if(mode === "mark"){
     if(cell.mine){
-      cell.marked = true;
+      cell.marked  = true;
       cell.revealed = true;
       correct++;
-      if(correct === message.length){
-        statusDiv.textContent = "SECRET: " + message;
+      updateProgress();
+      const mineTotal = [...message].filter(c => c !== " ").length;
+      if(correct === mineTotal){
+        showWin();
         gameOver = true;
       }
     } else {
-      // Incorrect mark triggers loss
-      gameOver = true;
-      cell.revealed = true;
+      // Wrong mark — instant loss
+      cell.revealed  = true;
       cell.triggered = true;
-      cell.textContent = cell.count > 0 ? cell.count : "";
       statusDiv.textContent = "GAME OVER";
+      statusDiv.className = "lose";
+      gameOver = true;
+      restartBtnEl.classList.add("visible");
     }
   } else {
     if(cell.mine){
       cell.triggered = true;
-      cell.revealed = true;
+      cell.revealed  = true;
       statusDiv.textContent = "GAME OVER";
+      statusDiv.className = "lose";
       gameOver = true;
+      restartBtnEl.classList.add("visible");
     } else {
       cell.revealed = true;
-      if(cell.count === 0) flood(x,y);
+      if(cell.count === 0) flood(x, y);
     }
   }
-
   render();
 }
 
+function showWin(){
+  // Reveal all remaining unrevealed non-mine cells
+  for(let y = 0; y < height; y++){
+    for(let x = 0; x < width; x++){
+      const cell = board[y][x];
+      if(!cell.revealed && !cell.mine) cell.revealed = true;
+    }
+  }
+  render();
+
+  // Animate letters in one by one; spaces rendered as a small gap, not a box
+  let html = "SECRET: ";
+  let delay = 0;
+  for(let i = 0; i < message.length; i++){
+    if(message[i] === " "){
+      html += `<span style="display:inline-block;width:0.5em"></span>`;
+    } else {
+      html += `<span class="letter-reveal" style="animation-delay:${delay*80}ms">${message[i]}</span>`;
+      delay++;
+    }
+  }
+  statusDiv.innerHTML = html;
+  statusDiv.className = "win";
+  restartBtnEl.classList.add("visible");
+}
+
+function restartGame(){
+  restartBtnEl.classList.remove("visible");
+  init();
+  setMode("reveal");
+}
+
 function render(){
-  boardDiv.innerHTML="";
-  for(let y=0;y<height;y++){
-    for(let x=0;x<width;x++){
-      const d=document.createElement("div");
-      d.className="cell";
-      const cell=board[y][x];
+  boardDiv.innerHTML = "";
+  for(let y = 0; y < height; y++){
+    for(let x = 0; x < width; x++){
+      const d = document.createElement("div");
+      d.className = "cell";
+      const cell = board[y][x];
 
       if(cell.revealed){
         d.classList.add("revealed");
-
         if(cell.triggered){
           d.classList.add("triggered");
-          if(cell.mine){
-            d.textContent = cell.letter;  // triggered mine
-          } else {
-            d.textContent = cell.count > 0 ? cell.count : ""; // mis-marked empty
-          }
-        }
-        else if(cell.marked){
+          d.textContent = cell.mine ? cell.letter : (cell.count > 0 ? cell.count : "");
+        } else if(cell.marked){
           d.classList.add("marked");
           d.textContent = cell.letter;
-        }
-        else if(cell.count>0){
+        } else if(cell.count > 0){
+          d.classList.add(`n${cell.count}`);
           d.textContent = cell.count;
         }
       }
 
-      d.addEventListener("click", () => clickCell(x,y));
+      d.addEventListener("click", () => clickCell(x, y));
       boardDiv.appendChild(d);
     }
   }
 }
 
-function flood(x,y){
-  for(let dy=-1;dy<=1;dy++){
-    for(let dx=-1;dx<=1;dx++){
-      const ny=y+dy, nx=x+dx;
-      if(ny>=0 && ny<height && nx>=0 && nx<width){
+function flood(x, y){
+  for(let dy = -1; dy <= 1; dy++){
+    for(let dx = -1; dx <= 1; dx++){
+      const ny = y+dy, nx = x+dx;
+      if(ny >= 0 && ny < height && nx >= 0 && nx < width){
         const n = board[ny][nx];
         if(!n.revealed && !n.mine){
           n.revealed = true;
-          if(n.count===0) flood(nx,ny);
+          if(n.count === 0) flood(nx, ny);
         }
       }
     }
   }
 }
 
-
 setMode("reveal");
 parse();
 </script>
-
 </body>
 </html>

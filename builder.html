@@ -2,80 +2,494 @@
 <html>
 <head>
 <meta charset="UTF-8">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAzMiAzMiI+CiAgPCEtLSBEYXJrIGNlbGwgYmFja2dyb3VuZCAtLT4KICA8cmVjdCB3aWR0aD0iMzIiIGhlaWdodD0iMzIiIHJ4PSI2IiBmaWxsPSIjMWMxOTE3Ii8+CiAgPCEtLSBNaW5lIGJvZHkgKGNpcmNsZSkgLS0+CiAgPGNpcmNsZSBjeD0iMTYiIGN5PSIxNiIgcj0iNyIgZmlsbD0iI2ZiYmYyNCIvPgogIDwhLS0gTWluZSBzcGlrZXMgLS0+CiAgPGxpbmUgeDE9IjE2IiB5MT0iNSIgeDI9IjE2IiB5Mj0iMiIgc3Ryb2tlPSIjZmJiZjI0IiBzdHJva2Utd2lkdGg9IjIuNSIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIi8+CiAgPGxpbmUgeDE9IjE2IiB5MT0iMjciIHgyPSIxNiIgeTI9IjMwIiBzdHJva2U9IiNmYmJmMjQiIHN0cm9rZS13aWR0aD0iMi41IiBzdHJva2UtbGluZWNhcD0icm91bmQiLz4KICA8bGluZSB4MT0iNSIgeTE9IjE2IiB4Mj0iMiIgeTI9IjE2IiBzdHJva2U9IiNmYmJmMjQiIHN0cm9rZS13aWR0aD0iMi41IiBzdHJva2UtbGluZWNhcD0icm91bmQiLz4KICA8bGluZSB4MT0iMjciIHkxPSIxNiIgeDI9IjMwIiB5Mj0iMTYiIHN0cm9rZT0iI2ZiYmYyNCIgc3Ryb2tlLXdpZHRoPSIyLjUiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIvPgogIDxsaW5lIHgxPSI4LjUiIHkxPSI4LjUiIHgyPSI2LjUiIHkyPSI2LjUiIHN0cm9rZT0iI2ZiYmYyNCIgc3Ryb2tlLXdpZHRoPSIyLjUiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIvPgogIDxsaW5lIHgxPSIyMy41IiB5MT0iMjMuNSIgeDI9IjI1LjUiIHkyPSIyNS41IiBzdHJva2U9IiNmYmJmMjQiIHN0cm9rZS13aWR0aD0iMi41IiBzdHJva2UtbGluZWNhcD0icm91bmQiLz4KICA8bGluZSB4MT0iMjMuNSIgeTE9IjguNSIgeDI9IjI1LjUiIHkyPSI2LjUiIHN0cm9rZT0iI2ZiYmYyNCIgc3Ryb2tlLXdpZHRoPSIyLjUiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIvPgogIDxsaW5lIHgxPSI4LjUiIHkxPSIyMy41IiB4Mj0iNi41IiB5Mj0iMjUuNSIgc3Ryb2tlPSIjZmJiZjI0IiBzdHJva2Utd2lkdGg9IjIuNSIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIi8+CiAgPCEtLSBTaGluZSBkb3QgLS0+CiAgPGNpcmNsZSBjeD0iMTMiIGN5PSIxMyIgcj0iMiIgZmlsbD0id2hpdGUiIG9wYWNpdHk9IjAuNCIvPgo8L3N2Zz4=">
 <title>Minesweeper Builder</title>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <style>
-body { font-family: sans-serif; text-align:center; margin:0; padding:12px; }
-#board { display:inline-grid; gap:4px; margin-top:12px; }
-.cell {
-  width:38px; height:38px;
-  background:#ddd;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  font-weight:bold;
-  border-radius:6px;
-  cursor:pointer;
-  user-select:none;
-}
-.mine { background:#333; color:white; }
-.valid { color:green; font-weight:bold; }
-.invalid { color:red; font-weight:bold; }
-button { padding:6px 12px; margin:6px; }
-input { margin:4px; }
-#output { margin-top:12px; word-break:break-all; }
+  @import url('https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Bebas+Neue&display=swap');
+
+  :root {
+    --amber: #f59e0b;
+    --amber-dark: #b45309;
+    --amber-light: #fef3c7;
+    --amber-hover: #fde68a;
+    --cell-size: clamp(34px, 9vw, 44px);
+    --gap: clamp(3px, 1vw, 5px);
+    --border-width: 5px;
+    --radius: 8px;
+    --bg: #f0f0f0;
+    --board-bg: #d8d8d8;
+    --mine-bg: #1c1917;
+    --mine-color: #fbbf24;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Space Mono', monospace;
+    background: var(--bg);
+    min-height: 100dvh;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 16px 8px 40px;
+  }
+
+  /* These elements stay centered on small boards but don't fight wide boards */
+  h3, #controls, #status, #generate-section {
+    align-self: center;
+  }
+
+  /* Board wrapper centers when it fits, left-anchors when it doesn't */
+  #board-wrapper {
+    align-self: center;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  h3 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(1.6rem, 6vw, 2.2rem);
+    letter-spacing: 0.12em;
+    color: #111;
+    margin-bottom: 20px;
+  }
+
+  /* ── CONTROLS ── */
+  #controls {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 10px;
+    width: 100%;
+    max-width: 520px;
+    margin-bottom: 14px;
+  }
+
+  .control-group {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .control-group label {
+    font-size: 0.65rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: #888;
+  }
+
+  .control-group input[type="number"] {
+    width: 70px;
+    padding: 8px 10px;
+    border: 2px solid #ccc;
+    border-radius: 8px;
+    font-family: 'Space Mono', monospace;
+    font-size: 0.9rem;
+    font-weight: 700;
+    background: #fff;
+    color: #111;
+    text-align: center;
+    transition: border-color 0.15s;
+    -moz-appearance: textfield;
+  }
+  .control-group input[type="number"]::-webkit-inner-spin-button,
+  .control-group input[type="number"]::-webkit-outer-spin-button { -webkit-appearance: none; }
+  .control-group input[type="number"]:focus {
+    outline: none;
+    border-color: var(--amber);
+  }
+  .control-group input[type="number"].input-error {
+    border-color: #b91c1c;
+    background: #fff5f5;
+  }
+
+  .control-group.msg-group {
+    flex: 1;
+    min-width: 180px;
+  }
+
+  .control-group.msg-group input[type="text"] {
+    width: 100%;
+    padding: 8px 12px;
+    border: 2px solid #ccc;
+    border-radius: 8px;
+    font-family: 'Space Mono', monospace;
+    font-size: 0.9rem;
+    font-weight: 700;
+    background: #fff;
+    color: #111;
+    transition: border-color 0.15s;
+  }
+  .control-group.msg-group input[type="text"]:focus {
+    outline: none;
+    border-color: var(--amber);
+  }
+
+  #newBoardBtn {
+    align-self: flex-end;
+    padding: 10px 18px;
+    border: none;
+    border-radius: 8px;
+    background: #333;
+    color: #fff;
+    font-family: 'Space Mono', monospace;
+    font-size: 0.8rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    cursor: pointer;
+    transition: background 0.15s, transform 0.1s;
+    white-space: nowrap;
+  }
+  #newBoardBtn:hover { background: #555; transform: translateY(-1px); }
+
+  /* ── STATUS ── */
+  #status {
+    font-size: clamp(0.7rem, 2.5vw, 0.8rem);
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    margin-bottom: 10px;
+    min-height: 1.2em;
+  }
+  #status.valid   { color: #15803d; }
+  #status.invalid { color: #b91c1c; }
+
+  /* ── BOARD WRAPPER ── */
+  #board-wrapper {
+    padding: var(--border-width);
+    border-radius: calc(var(--radius) + var(--border-width));
+    background: var(--amber);
+    box-shadow: 0 0 0 2px var(--amber), 0 6px 28px rgba(245,158,11,0.28);
+    margin-bottom: 18px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  #board {
+    display: inline-grid;
+    gap: 0;
+    background: var(--board-bg);
+    border-radius: var(--radius);
+    padding: var(--gap);
+  }
+
+  /* ── CELLS ── */
+  .cell {
+    width: var(--cell-size);
+    height: var(--cell-size);
+    background: #c8c8c8;
+    border: calc(var(--gap) / 2) solid var(--board-bg);
+    box-sizing: border-box;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: clamp(0.7rem, 2.5vw, 0.95rem);
+    border-radius: 5px;
+    cursor: pointer;
+    user-select: none;
+    -webkit-tap-highlight-color: transparent;
+    transition: background 0.12s, transform 0.08s;
+    position: relative;
+  }
+
+  @media (hover: hover) {
+    .cell:not(.mine):hover,
+    .cell:not(.mine).trail {
+      background: var(--amber-hover);
+      transform: scale(1.07);
+    }
+    .cell.mine:hover,
+    .cell.mine.trail {
+      filter: brightness(1.25);
+      transform: scale(1.07);
+    }
+  }
+
+  .cell.mine {
+    background: var(--mine-bg);
+    color: var(--mine-color);
+  }
+
+  .cell.mine.just-placed {
+    animation: minePop 0.25s cubic-bezier(0.34,1.56,0.64,1);
+  }
+  .cell.trail-fade {
+    transition: background 0.08s ease, transform 0.08s ease !important;
+  }
+
+  @keyframes minePop {
+    from { transform: scale(0.6); }
+    to   { transform: scale(1); }
+  }
+
+  .cell .hint-num { font-size: clamp(0.6rem, 2vw, 0.8rem);  }
+  .cell .n1 { color: #1565c0; }
+  .cell .n2 { color: #2e7d32; }
+  .cell .n3 { color: #b71c1c; }
+  .cell .n4 { color: #4a148c; }
+  .cell .n5 { color: #bf360c; }
+  .cell .n6 { color: #006064; }
+  .cell .n7 { color: #212121; }
+  .cell .n8 { color: #616161; }
+
+  /* ── GENERATE SECTION ── */
+  #generate-section {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    width: 100%;
+    max-width: 520px;
+  }
+
+  #generateBtn {
+    padding: 12px 32px;
+    border: none;
+    border-radius: 10px;
+    background: var(--amber);
+    color: #111;
+    font-family: 'Space Mono', monospace;
+    font-size: 0.9rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    cursor: pointer;
+    transition: background 0.15s, transform 0.1s, box-shadow 0.15s;
+    box-shadow: 0 4px 16px rgba(245,158,11,0.3);
+  }
+  #generateBtn:hover {
+    background: var(--amber-dark);
+    color: #fff;
+    transform: translateY(-1px);
+    box-shadow: 0 6px 20px rgba(180,83,9,0.35);
+  }
+  #generateBtn:disabled {
+    background: #ccc;
+    color: #999;
+    cursor: not-allowed;
+    box-shadow: none;
+    transform: none;
+  }
+
+  /* ── LINK OUTPUT ── */
+  #link-row {
+    display: none;
+    width: 100%;
+    align-items: center;
+    gap: 8px;
+  }
+  #link-row.visible { display: flex; }
+
+  #link-display.copied {
+    border-color: #15803d;
+    background: #f0fdf4;
+    transition: border-color 0.15s, background 0.15s;
+  }
+
+  #link-display {
+    flex: 1;
+    padding: 9px 12px;
+    border: 2px solid #ccc;
+    border-radius: 8px;
+    font-family: 'Space Mono', monospace;
+    font-size: clamp(0.55rem, 1.8vw, 0.72rem);
+    background: #fff;
+    color: #444;
+    word-break: break-all;
+    text-align: left;
+    line-height: 1.4;
+  }
+
+  #copyBtn {
+    padding: 9px 14px;
+    border: none;
+    border-radius: 8px;
+    background: #333;
+    color: #fff;
+    font-family: 'Space Mono', monospace;
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    cursor: pointer;
+    white-space: nowrap;
+    flex-shrink: 0;
+    transition: background 0.15s, transform 0.1s;
+  }
+  #copyBtn:hover { background: #555; transform: translateY(-1px); }
+  #copyBtn.copied { background: #15803d; }
+
+  #playBtn {
+    padding: 9px 14px;
+    border: none;
+    border-radius: 8px;
+    background: #333;
+    color: #fff;
+    font-family: 'Space Mono', monospace;
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    cursor: pointer;
+    white-space: nowrap;
+    flex-shrink: 0;
+    transition: background 0.15s, transform 0.1s;
+  }
+  #playBtn:hover { background: #555; transform: translateY(-1px); }
 </style>
 </head>
 <body>
 
 <h3>Build Secret Minesweeper</h3>
 
-Width <input id="w" type="number" value="8" min="3" max="20">
-Height <input id="h" type="number" value="8" min="3" max="20">
-<br>
-Message <input id="msg" type="text" value="HELLO">
-<button id="newBoardBtn">New Board</button>
+<div id="controls">
+  <div class="control-group">
+    <label>Width</label>
+    <input id="w" type="number" value="8" min="1" max="250">
+  </div>
+  <div class="control-group">
+    <label>Height</label>
+    <input id="h" type="number" value="8" min="1" max="250">
+  </div>
+  <div class="control-group msg-group">
+    <label>Secret Message</label>
+    <input id="msg" type="text" value="HELLO">
+  </div>
 
-<div id="board"></div>
+</div>
+
 <div id="status"></div>
 
-<button id="generateBtn">Generate Link</button>
-<a id="output" href="#"></a>
+<div id="board-wrapper">
+  <div id="board"></div>
+</div>
+
+<div id="generate-section">
+  <button id="generateBtn" disabled>Generate Link</button>
+  <div id="link-row">
+    <input id="link-display" type="text" readonly>
+    <button id="copyBtn">COPY</button>
+  <button id="playBtn">▶ PLAY</button>
+  </div>
+</div>
 
 <script>
 const SECRET_KEY = "minesalt";
 
-const boardDiv = document.getElementById("board");
-const statusDiv = document.getElementById("status");
-const outputDiv = document.getElementById("output");
-const msgInput = document.getElementById("msg");
-const wInput = document.getElementById("w");
-const hInput = document.getElementById("h");
+const boardDiv    = document.getElementById("board");
+const statusDiv   = document.getElementById("status");
+const msgInput    = document.getElementById("msg");
+const wInput      = document.getElementById("w");
+const hInput      = document.getElementById("h");
+const generateBtn = document.getElementById("generateBtn");
+const linkRow     = document.getElementById("link-row");
+const linkDisplay = document.getElementById("link-display");
+const copyBtn     = document.getElementById("copyBtn");
+const playBtn     = document.getElementById("playBtn");
 
 let width = 0;
 let height = 0;
 let board = [];
+let savedMines = new Set(); // persists across resizes as "x,y" keys
 
-document.getElementById("newBoardBtn").addEventListener("click", createBoard);
-document.getElementById("generateBtn").addEventListener("click", generateLink);
-msgInput.addEventListener("input", updateLetters);
+
+generateBtn.addEventListener("click", generateLink);
+wInput.addEventListener("input", () => resizeBoard());
+hInput.addEventListener("input", () => resizeBoard());
+msgInput.addEventListener("input", () => { updateLetters(); linkRow.classList.remove("visible"); });
+
+playBtn.addEventListener("click", () => {
+  window.open("https://" + linkDisplay.value, "_blank");
+});
+
+copyBtn.addEventListener("click", () => {
+  const url = "https://" + linkDisplay.value;
+  navigator.clipboard.writeText(url).then(() => {
+    copyBtn.textContent = "COPIED!";
+    copyBtn.classList.add("copied");
+    linkDisplay.classList.add("copied");
+    setTimeout(() => {
+      copyBtn.textContent = "COPY";
+      copyBtn.classList.remove("copied");
+      linkDisplay.classList.remove("copied");
+    }, 1500);
+  });
+});
+
+// Trail effect
+const trailTimers = new WeakMap();
+document.getElementById("board").addEventListener("mousemove", e => {
+  const el = document.elementFromPoint(e.clientX, e.clientY);
+  if (!el || !el.classList.contains("cell")) return;
+  if (trailTimers.has(el)) {
+    clearTimeout(trailTimers.get(el));
+    el.classList.remove("trail-fade");
+  }
+  el.classList.add("trail");
+  const t = setTimeout(() => {
+    el.classList.add("trail-fade");
+    el.classList.remove("trail");
+    setTimeout(() => el.classList.remove("trail-fade"), 80);
+  }, 30);
+  trailTimers.set(el, t);
+});
+
+function loadFromHash() {
+  const hash = location.hash.slice(1);
+  if (!hash) return;
+  try {
+    const binary  = atob(hash);
+    const bytes   = Uint8Array.from(binary, c => c.charCodeAt(0));
+    const unscram = xorScrambleBytes(bytes);
+
+    const w = (unscram[0] << 8) | unscram[1];
+    const h = (unscram[2] << 8) | unscram[3];
+
+    const bitCount  = w * h;
+    const byteCount = Math.ceil(bitCount / 8);
+    const packed    = unscram.slice(4, 4 + byteCount);
+
+    let bits = "";
+    for (let i = 0; i < byteCount; i++)
+      for (let b = 7; b >= 0; b--)
+        bits += (packed[i] >> b) & 1;
+    const layout = bits.slice(0, bitCount);
+
+    const msg = new TextDecoder().decode(unscram.slice(4 + byteCount));
+
+    // Apply decoded state
+    wInput.value = w;
+    hInput.value = h;
+    msgInput.value = msg;
+
+    // Restore savedMines from layout
+    savedMines.clear();
+    for (let y = 0; y < h; y++)
+      for (let x = 0; x < w; x++)
+        if (layout[y * w + x] === "1") savedMines.add(`${x},${y}`);
+
+    createBoard();
+  } catch(e) {
+    // Invalid hash — just ignore and leave blank board
+  }
+}
 
 function createBoard() {
-  width = parseInt(wInput.value);
+  width  = parseInt(wInput.value);
   height = parseInt(hInput.value);
 
   board = [];
   boardDiv.innerHTML = "";
-  boardDiv.style.gridTemplateColumns = `repeat(${width}, 38px)`;
+  boardDiv.style.gridTemplateColumns = `repeat(${width}, var(--cell-size))`;
+  linkRow.classList.remove("visible");
 
   for (let y = 0; y < height; y++) {
     board[y] = [];
     for (let x = 0; x < width; x++) {
-      board[y][x] = false;
-
+      board[y][x] = savedMines.has(`${x},${y}`);
       const cell = document.createElement("div");
       cell.className = "cell";
-      cell.addEventListener("click", () => toggle(x, y));
+      cell.addEventListener("click", () => toggle(x, y, cell));
       boardDiv.appendChild(cell);
     }
   }
@@ -83,100 +497,164 @@ function createBoard() {
   updateLetters();
 }
 
-function toggle(x, y) {
+let resizeTimer = null;
+function resizeBoard() {
+  const w = parseInt(wInput.value);
+  const h = parseInt(hInput.value);
+
+  const wBad = isNaN(w) || w < 1 || w > 250;
+  const hBad = isNaN(h) || h < 1 || h > 250;
+
+  wInput.classList.toggle("input-error", wBad);
+  hInput.classList.toggle("input-error", hBad);
+
+  if (wBad || hBad) {
+    const msgs = [];
+    if (wBad) msgs.push(`Width must be 1–250`);
+    if (hBad) msgs.push(`Height must be 1–250`);
+    statusDiv.textContent = msgs.join(" · ");
+    statusDiv.className = "invalid";
+  }
+
+  // Always rebuild so the board visually reflects the input (even if 0×N or empty)
+  createBoard();
+}
+
+function toggle(x, y, cellEl) {
   board[y][x] = !board[y][x];
+  const key = `${x},${y}`;
+  if (board[y][x]) {
+    savedMines.add(key);
+    cellEl.classList.remove("just-placed");
+    void cellEl.offsetWidth;
+    cellEl.classList.add("just-placed");
+  } else {
+    savedMines.delete(key);
+  }
   updateLetters();
+  linkRow.classList.remove("visible");
 }
 
 function updateLetters() {
   if (!board.length) return;
 
-  const message = msgInput.value;
-  const cells = boardDiv.querySelectorAll(".cell");
+  const message   = msgInput.value;
+  const mineChars = [...message].filter(c => c !== " ");
+  const cells     = boardDiv.querySelectorAll(".cell");
 
   let minePositions = [];
-
-  for (let y = 0; y < height; y++) {
-    for (let x = 0; x < width; x++) {
+  for (let y = 0; y < height; y++)
+    for (let x = 0; x < width; x++)
       if (board[y][x]) minePositions.push({ x, y });
-    }
-  }
 
-  minePositions.sort((a, b) =>
-    (a.y * width + a.x) - (b.y * width + b.x)
-  );
+  minePositions.sort((a, b) => (a.y * width + a.x) - (b.y * width + b.x));
 
-  cells.forEach(c => {
-    c.classList.remove("mine");
-    c.textContent = "";
-  });
+  cells.forEach(c => { c.classList.remove("mine"); c.innerHTML = ""; });
 
   for (let i = 0; i < minePositions.length; i++) {
     const { x, y } = minePositions[i];
-    const index = y * width + x;
-    const cell = cells[index];
-
+    const cell = cells[y * width + x];
     cell.classList.add("mine");
+    if (i < mineChars.length) cell.innerHTML = mineChars[i];
+  }
 
-    if (i < message.length) {
-      cell.textContent = message[i];
+  // Show faint adjacency counts on non-mine cells
+  for (let y = 0; y < height; y++) {
+    for (let x = 0; x < width; x++) {
+      if (board[y][x]) continue;
+      let count = 0;
+      for (let dy = -1; dy <= 1; dy++)
+        for (let dx = -1; dx <= 1; dx++) {
+          const ny = y+dy, nx = x+dx;
+          if (ny >= 0 && ny < height && nx >= 0 && nx < width && board[ny][nx]) count++;
+        }
+      const cell = cells[y * width + x];
+      if (count > 0) {
+        const span = document.createElement("span");
+        span.className = `hint-num n${count}`;
+        span.textContent = count;
+        cell.appendChild(span);
+      }
     }
   }
 
   const mineCount = minePositions.length;
+  const needed    = mineChars.length;
 
-  if (mineCount === message.length) {
-    statusDiv.textContent = "Mine count matches message length.";
-    statusDiv.className = "valid";
+  if (mineCount === needed && needed > 0) {
+    statusDiv.textContent = "";
+    statusDiv.className = "";
+    generateBtn.disabled = false;
   } else {
-    statusDiv.textContent =
-      `Mines: ${mineCount} | Message length: ${message.length}`;
+    const diff = needed - mineCount;
+    statusDiv.textContent = diff > 0
+      ? `${mineCount} / ${needed} mines placed`
+      : mineCount === 0
+        ? "Click cells to place mines"
+        : `${mineCount} mines — need ${needed} (remove ${-diff})`;
     statusDiv.className = "invalid";
+    generateBtn.disabled = true;
   }
 }
 
-function xorScramble(str) {
-  let out = "";
-  for (let i = 0; i < str.length; i++) {
-    const k = SECRET_KEY.charCodeAt(i % SECRET_KEY.length);
-    out += String.fromCharCode(str.charCodeAt(i) ^ k);
-  }
-  return out;
+function xorScrambleBytes(bytes) {
+  const key = SECRET_KEY;
+  return bytes.map((b, i) => b ^ key.charCodeAt(i % key.length));
 }
 
 function generateLink() {
   if (!board.length) return;
 
-  const message = msgInput.value;
-  let bitstring = "";
+  const message   = msgInput.value;
+  const mineChars = [...message].filter(c => c !== " ");
+  let bits = [];
   let mineCount = 0;
 
-  for (let y = 0; y < height; y++) {
+  for (let y = 0; y < height; y++)
     for (let x = 0; x < width; x++) {
-      if (board[y][x]) {
-        bitstring += "1";
-        mineCount++;
-      } else {
-        bitstring += "0";
-      }
+      if (board[y][x]) { bits.push(1); mineCount++; }
+      else               bits.push(0);
     }
-  }
 
-  if (mineCount !== message.length) {
+  if (mineCount !== mineChars.length) {
     statusDiv.textContent = "Fix mismatch before generating link.";
     statusDiv.className = "invalid";
     return;
   }
 
-  const raw = `${width}|${height}|${message}|${bitstring}`;
-  const encoded = btoa(xorScramble(raw));
+  // Pack bits into bytes (8 bits per byte)
+  while (bits.length % 8 !== 0) bits.push(0);
+  const packed = [];
+  for (let i = 0; i < bits.length; i += 8) {
+    packed.push(
+      (bits[i]<<7)|(bits[i+1]<<6)|(bits[i+2]<<5)|(bits[i+3]<<4)|
+      (bits[i+4]<<3)|(bits[i+5]<<2)|(bits[i+6]<<1)|bits[i+7]
+    );
+  }
 
-  link = `dallach.github.io/play.html#${encoded}`;
-  outputDiv.textContent = link;
-  outputDiv.href = link;
+  // Encode width and height as 2 bytes each (supports up to 65535)
+  const msgBytes = [...new TextEncoder().encode(message)];
+  const payload  = [
+    (width >> 8) & 0xff, width & 0xff,
+    (height >> 8) & 0xff, height & 0xff,
+    ...packed,
+    ...msgBytes
+  ];
+
+  // XOR scramble then base64
+  const scrambled = xorScrambleBytes(payload);
+  const encoded   = btoa(String.fromCharCode(...scrambled));
+  const link      = `dallach.github.io/minesweeper/play.html#${encoded}`;
+
+  linkDisplay.value = link;
+  linkRow.classList.add("visible");
+  history.replaceState(null, "", `#${encoded}`);
+  copyBtn.textContent = "COPY";
+  copyBtn.classList.remove("copied");
 }
 
 createBoard();
+loadFromHash();
 </script>
 
 </body>
