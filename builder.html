@@ -644,7 +644,7 @@ function generateLink() {
   // XOR scramble then base64
   const scrambled = xorScrambleBytes(payload);
   const encoded   = btoa(String.fromCharCode(...scrambled));
-  const link      = `dallach.github.io/play.html#${encoded}`;
+  const link      = `dallach.github.io/minesweeper/play.html#${encoded}`;
 
   linkDisplay.value = link;
   linkRow.classList.add("visible");
